@@ -203,7 +203,7 @@ export default class UserSetArchetype {
         return
       }
 
-      if (!answers || answers.length === 0) {
+      if (!answers) {
         res.json({
           error: true,
           error_text: 'answers is required',
@@ -211,10 +211,10 @@ export default class UserSetArchetype {
         })
         return
       }
-  
+
       // Проверяем существование пользователя по uid
       let user = await User.findOne({ uid });
-  
+
       if (!user) {
         res.json({
           error: true,
@@ -225,51 +225,84 @@ export default class UserSetArchetype {
       }
 
       let archetype: ResultName
-      const a = answers
-      const sex = a[1]
-      const age = a[0]
-      if (sex === 1) { // женский
-        if (age >= 18 && age <= 25) {
-          archetype = findResult(types.female.young, a)
-        } else if (age >= 26 && age <= 33) {
-          archetype = findResult(types.female.middle, a)
-        } else if (age >= 34 && age <= 43) {
-          archetype = findResult(types.female.adult, a)
-        } else if (age >= 44) {
-          archetype = findResult(types.female.old, a)
-        }
-      } else if (sex === 2) { // мужской
-        if (age >= 18 && age <= 25) {
-          archetype = findResult(types.male.young, a)
-        } else if (age >= 26 && age <= 35) {
-          archetype = findResult(types.male.middle, a)
-        } else if (age >= 36 && age <= 45) {
-          archetype = findResult(types.male.adult, a)
-        } else if (age >= 46) {
-          archetype = findResult(types.male.old, a)
-        }
-      }
+      console.log(answers.length)
 
-      let archetypeObj = await Archetype.findOne({ name: archetype });
-  
-      if (!archetypeObj) {
+      if (answers.length === 15) {
+
+        const a = answers
+        const sex = a[1]
+        const age = a[0]
+        if (sex === 1) { // женский
+          if (age >= 18 && age <= 25) {
+            archetype = findResult(types.female.young, a)
+          } else if (age >= 26 && age <= 33) {
+            archetype = findResult(types.female.middle, a)
+          } else if (age >= 34 && age <= 43) {
+            archetype = findResult(types.female.adult, a)
+          } else if (age >= 44) {
+            archetype = findResult(types.female.old, a)
+          }
+        } else if (sex === 2) { // мужской
+          if (age >= 18 && age <= 25) {
+            archetype = findResult(types.male.young, a)
+          } else if (age >= 26 && age <= 35) {
+            archetype = findResult(types.male.middle, a)
+          } else if (age >= 36 && age <= 45) {
+            archetype = findResult(types.male.adult, a)
+          } else if (age >= 46) {
+            archetype = findResult(types.male.old, a)
+          }
+        }
+
+        let archetypeObj = await Archetype.findOne({ name: archetype });
+
+        if (!archetypeObj) {
+          res.json({
+            error: true,
+            error_text: 'archetype is not existed',
+            data: {}
+          })
+          return
+        }
+
+        await user.updateOne({ archetype: archetypeObj._id })
+
         res.json({
-          error: true,
-          error_text: 'archetype is not existed',
-          data: {}
+          error: false,
+          error_text: '',
+          data: {
+            archetype: archetypeObj
+          }
         })
-        return
-      }
 
-      await user.updateOne({archetype: archetypeObj._id})
+      } else {
+        if (user.archetype) {
 
-      res.json({
-        error: false,
-        error_text: '',
-        data: {
-          archetype: archetypeObj
+          let archetypeObj = await Archetype.findOne({ _id: user.archetype });
+          console.log(archetypeObj)
+          res.json({
+            error: false,
+            error_text: '',
+            data: {
+              archetype: archetypeObj
+            }
+          })
+
+        } else {
+          console.log('damn')
+          let archetypeObj = await Archetype.findOne({ name: 'парижанка' });
+
+          await user.updateOne({ archetype: archetypeObj._id })
+  
+          res.json({
+            error: false,
+            error_text: '',
+            data: {
+              archetype: archetypeObj
+            }
+          })
         }
-      })
+      }
     } catch (error) {
       console.error('Error processing user check', error);
       res.json({
