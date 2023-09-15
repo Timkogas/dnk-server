@@ -225,7 +225,6 @@ export default class UserSetArchetype {
       }
 
       let archetype: ResultName
-      console.log(answers.length)
 
       if (answers.length === 15) {
 
@@ -279,7 +278,6 @@ export default class UserSetArchetype {
         if (user.archetype) {
 
           let archetypeObj = await Archetype.findOne({ _id: user.archetype });
-          console.log(archetypeObj)
           res.json({
             error: false,
             error_text: '',
