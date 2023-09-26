@@ -2,6 +2,8 @@ import * as core from 'express-serve-static-core';
 import UserCheck from './user/UserCheck';
 import UserEnablePush from './user/UserEnablePush';
 import UserSetArchetype from './user/UserSetArchetype';
+import DoctorOne from './doctor/DoctorOne';
+import DoctorAll from './doctor/DoctorAll';
 
 class Routes {
 
@@ -14,7 +16,7 @@ class Routes {
 
   private _init(): void {
     this._userRoutes();
-
+    this._doctorRoutes()
   }
 
   private _userRoutes(): void {
@@ -23,6 +25,10 @@ class Routes {
     new UserSetArchetype(this._app)
   }
 
+  private _doctorRoutes(): void {
+    new DoctorOne(this._app)
+    new DoctorAll(this._app)
+  }
 }
 
 export default Routes
