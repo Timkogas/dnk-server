@@ -434,7 +434,7 @@ export const archetypes: IArchetype[] = [
     ],
     img: 'prometei',
     imgPc: 'prometei-pc',
-    storyUrl: 'https://sun9-45.userapi.com/impg/gW7iUGS8x_SYk0AsarTAmQkWndTSHqrneg-pcjQ/W6EQkyQ6AxQ.jpg?size=1080x1920&quality=95&sign=2d199131ad5d21eb9465b57930161397&type=album',
+    storyUrl: 'https://sun9-45.userapi.com/impg/gW7iUGS8x_SYk0AsarTAmQkWndTSHqrnegpcjQ/W6EQkyQ6AxQ.jpg?size=1080x1920&quality=95&sign=2d199131ad5d21eb9465b57930161397&type=album',
     postUrl: 'photo-221991753_457239083',
   },
   {
