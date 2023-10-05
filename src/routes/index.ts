@@ -4,6 +4,7 @@ import UserEnablePush from './user/UserEnablePush';
 import UserSetArchetype from './user/UserSetArchetype';
 import DoctorOne from './doctor/DoctorOne';
 import DoctorAll from './doctor/DoctorAll';
+import UserRegistration from './user/UserRegistration';
 
 class Routes {
 
@@ -23,6 +24,7 @@ class Routes {
     new UserCheck(this._app)
     new UserEnablePush(this._app)
     new UserSetArchetype(this._app)
+    new UserRegistration(this._app)
   }
 
   private _doctorRoutes(): void {

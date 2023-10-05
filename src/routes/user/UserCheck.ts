@@ -1,5 +1,6 @@
 import * as core from 'express-serve-static-core';
 import User from '../../models/User';
+import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
 
 export default class UserCheck {
   constructor(app: core.Express) {
@@ -17,6 +18,26 @@ export default class UserCheck {
 
   private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
     try {
+
+      if (req.headers.search) {
+        const areLaunchParamsValid = verifyLaunchParams(req.headers.search);
+        if (!areLaunchParamsValid) {
+          res.json({
+            error: true,
+            error_text: 'security error',
+            data: {}
+          })
+          return
+        }
+      } else {
+        res.json({
+          error: true,
+          error_text: 'security error',
+          data: {}
+        })
+        return
+      }
+
       const { uid } = req.body;
       if (!uid) {
         res.json({
@@ -26,16 +47,16 @@ export default class UserCheck {
         })
         return
       }
-  
+
       // Проверяем существование пользователя по uid
       let user = await User.findOne({ uid }).populate('archetype');
-  
+
       if (!user) {
         // Пользователь не найден, создаем нового пользователя
         user = new User({ uid });
         await user.save();
       } else {
-        await user.updateOne({lastLoginDate: Date.now()})
+        await user.updateOne({ lastLoginDate: Date.now() })
       }
 
       // Возвращаем данные о пользователе

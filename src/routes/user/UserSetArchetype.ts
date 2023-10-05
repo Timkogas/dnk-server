@@ -1,6 +1,7 @@
 import * as core from 'express-serve-static-core';
 import User from '../../models/User';
 import Archetype, { ResultName } from '../../models/Archetype';
+import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
 
 interface Itypes {
   male: {
@@ -193,6 +194,25 @@ export default class UserSetArchetype {
 
   private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
     try {
+      if (req.headers.search) {
+        const areLaunchParamsValid = verifyLaunchParams(req.headers.search);
+        if (!areLaunchParamsValid) {
+          res.json({
+            error: true,
+            error_text: 'security error',
+            data: {}
+          })
+          return
+        }
+      } else {
+        res.json({
+          error: true,
+          error_text: 'security error',
+          data: {}
+        })
+        return
+      }
+
       const { uid, answers } = req.body;
       if (!uid) {
         res.json({
