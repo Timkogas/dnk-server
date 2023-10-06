@@ -212,8 +212,13 @@ export default class UserSetArchetype {
         })
         return
       }
+    
 
-      const { uid, answers } = req.body;
+
+      const params = new URLSearchParams(req.headers.search as string);
+      const uid = params.get("vk_user_id");
+      const { answers } = req.body;
+
       if (!uid) {
         res.json({
           error: true,
@@ -307,11 +312,10 @@ export default class UserSetArchetype {
           })
 
         } else {
-          console.log('damn')
           let archetypeObj = await Archetype.findOne({ name: 'парижанка' });
 
           await user.updateOne({ archetype: archetypeObj._id })
-  
+
           res.json({
             error: false,
             error_text: '',

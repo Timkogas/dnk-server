@@ -37,7 +37,9 @@ export default class UserEnablePush {
         return
       }
 
-      const { uid } = req.body;
+      const params = new URLSearchParams(req.headers.search as string);
+      const uid = params.get("vk_user_id");
+      
       if (!uid) {
         res.json({
           error: true,

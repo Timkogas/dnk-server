@@ -18,7 +18,6 @@ export default class UserCheck {
 
   private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
     try {
-
       if (req.headers.search) {
         const areLaunchParamsValid = verifyLaunchParams(req.headers.search);
         if (!areLaunchParamsValid) {
@@ -37,8 +36,9 @@ export default class UserCheck {
         })
         return
       }
-
-      const { uid } = req.body;
+      const params = new URLSearchParams(req.headers.search as string);
+      const uid = params.get("vk_user_id");
+      
       if (!uid) {
         res.json({
           error: true,
