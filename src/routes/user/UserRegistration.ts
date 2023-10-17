@@ -3,7 +3,11 @@ import User from '../../models/User';
 import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
 import axios from 'axios';
 
-const requestCounter = {};
+let requestCounter = {};
+
+setInterval(() => {
+    requestCounter = {};
+}, 600000);
 
 export default class UserRegistration {
     constructor(app: core.Express) {
