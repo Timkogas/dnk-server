@@ -59,23 +59,35 @@ export default class UserRegistration {
             }
 
             const data = req.body;
-            axios.post(process.env.CRM_URL, data)
-                .then((data) => {
-                    res.json({
-                        error: false,
-                        error_text: 'success',
-                        data: {}
+
+            const { ADDRESS_CITY, COMMENTS, LAST_NAME, NAME, PHONE, TITLE } = data.fields
+
+            if (ADDRESS_CITY && COMMENTS && LAST_NAME && NAME && PHONE && TITLE) {
+                axios.post(process.env.CRM_URL, data)
+                    .then((data) => {
+                        res.json({
+                            error: false,
+                            error_text: 'success',
+                            data: {}
+                        })
+                        return
                     })
-                    return
-                })
-                .catch(() => {
-                    res.json({
-                        error: true,
-                        error_text: 'error',
-                        data: {}
+                    .catch(() => {
+                        res.json({
+                            error: true,
+                            error_text: 'error',
+                            data: {}
+                        })
+                        return
                     })
-                    return
+            } else {
+                res.json({
+                    error: true,
+                    error_text: 'need all fields',
+                    data: {}
                 })
+                return
+            }
 
 
         } catch (error) {
