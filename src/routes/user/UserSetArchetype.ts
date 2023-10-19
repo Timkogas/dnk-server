@@ -182,7 +182,7 @@ let requestCounter = {};
 
 setInterval(() => {
     requestCounter = {};
-}, 600000);
+}, 100000);
 
 export default class UserSetArchetype {
   constructor(app: core.Express) {
