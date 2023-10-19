@@ -60,26 +60,44 @@ export default class UserRegistration {
 
             const data = req.body;
 
+            if (!data.fields) {
+                res.json({
+                    error: true,
+                    error_text: 'need all fields',
+                    data: {}
+                })
+                return
+            }
+
             const { ADDRESS_CITY, COMMENTS, LAST_NAME, NAME, PHONE, TITLE } = data.fields
 
             if (ADDRESS_CITY && COMMENTS && LAST_NAME && NAME && PHONE && TITLE) {
-                axios.post(process.env.CRM_URL, data)
-                    .then((data) => {
-                        res.json({
-                            error: false,
-                            error_text: 'success',
-                            data: {}
+                if (TITLE === "VK mini apps" && PHONE[0].VALUE.length === 12 && NAME.length < 150 && COMMENTS.length < 300 && LAST_NAME.length < 150) {
+                    axios.post(process.env.CRM_URL, data)
+                        .then((data) => {
+                            res.json({
+                                error: false,
+                                error_text: 'success',
+                                data: {}
+                            })
+                            return
                         })
-                        return
-                    })
-                    .catch(() => {
-                        res.json({
-                            error: true,
-                            error_text: 'error',
-                            data: {}
+                        .catch(() => {
+                            res.json({
+                                error: true,
+                                error_text: 'error',
+                                data: {}
+                            })
+                            return
                         })
-                        return
+                } else {
+                    res.json({
+                        error: true,
+                        error_text: 'need valid fields',
+                        data: {}
                     })
+                    return
+                }
             } else {
                 res.json({
                     error: true,

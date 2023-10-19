@@ -178,6 +178,12 @@ const findResult = (types: { [key: string]: ResultName }, a: number[]): ResultNa
   return name as ResultName
 }
 
+let requestCounter = {};
+
+setInterval(() => {
+    requestCounter = {};
+}, 600000);
+
 export default class UserSetArchetype {
   constructor(app: core.Express) {
     this._app = app;
@@ -193,6 +199,19 @@ export default class UserSetArchetype {
   }
 
   private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
+    const clientIP = req.ip;
+    requestCounter[clientIP] = requestCounter[clientIP] || 0;
+    requestCounter[clientIP]++;
+
+    if (requestCounter[clientIP] > 10) { 
+        res.json({
+            error: true,
+            error_text: 'to many requests',
+            data: {}
+        })
+        return
+    }
+
     try {
       if (req.headers.search) {
         const areLaunchParamsValid = verifyLaunchParams(req.headers.search);

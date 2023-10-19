@@ -1,6 +1,12 @@
 import * as core from 'express-serve-static-core';
 import Doctor from '../../models/Doctor';
 
+let requestCounter = {};
+
+setInterval(() => {
+    requestCounter = {};
+}, 100000);
+
 export default class DoctorOne {
   constructor(app: core.Express) {
     this._app = app;
@@ -11,6 +17,19 @@ export default class DoctorOne {
 
   private _init(): void {
     this._app.post('/doctor/one', async (req, res): Promise<void> => {
+      const clientIP = req.ip;
+      requestCounter[clientIP] = requestCounter[clientIP] || 0;
+      requestCounter[clientIP]++;
+  
+      if (requestCounter[clientIP] > 80) { 
+          res.json({
+              error: true,
+              error_text: 'to many requests',
+              data: {}
+          })
+          return
+      }
+
       try {
         const { id } = req.body;
         if (!id) {

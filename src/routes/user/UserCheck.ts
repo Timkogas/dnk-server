@@ -2,6 +2,12 @@ import * as core from 'express-serve-static-core';
 import User from '../../models/User';
 import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
 
+let requestCounter = {};
+
+setInterval(() => {
+    requestCounter = {};
+}, 100000);
+
 export default class UserCheck {
   constructor(app: core.Express) {
     this._app = app;
@@ -17,6 +23,19 @@ export default class UserCheck {
   }
 
   private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
+    const clientIP = req.ip;
+    requestCounter[clientIP] = requestCounter[clientIP] || 0;
+    requestCounter[clientIP]++;
+
+    if (requestCounter[clientIP] > 80) { 
+        res.json({
+            error: true,
+            error_text: 'to many requests',
+            data: {}
+        })
+        return
+    }
+
     try {
       if (req.headers.search) {
         const areLaunchParamsValid = verifyLaunchParams(req.headers.search);
