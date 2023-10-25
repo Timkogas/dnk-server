@@ -1,5 +1,5 @@
 import * as core from 'express-serve-static-core';
-import User from '../../models/User';
+import User, { UserInfo } from '../../models/User';
 import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
 
 let requestCounter = {};
@@ -69,10 +69,11 @@ export default class UserCheck {
 
       // Проверяем существование пользователя по uid
       let user = await User.findOne({ uid }).populate('archetype');
+      const vkData: UserInfo = req?.body?.vkData;
 
       if (!user) {
         // Пользователь не найден, создаем нового пользователя
-        user = new User({ uid });
+        user = new User({ uid, vkdata: vkData });
         await user.save();
       } else {
         await user.updateOne({ lastLoginDate: Date.now() })
