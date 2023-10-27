@@ -76,7 +76,7 @@ export default class UserCheck {
         user = new User({ uid, vkdata: vkData });
         await user.save();
       } else {
-        await user.updateOne({ lastLoginDate: Date.now() })
+        await user.updateOne({ lastLoginDate: Date.now(), vkdata: vkData })
       }
 
       // Возвращаем данные о пользователе
