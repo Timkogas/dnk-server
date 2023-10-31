@@ -7,6 +7,7 @@ import DoctorAll from './doctor/DoctorAll';
 import UserRegistration from './user/UserRegistration';
 import AdminLogin from './admin/AdminLogin';
 import AdminLogout from './admin/AdminLogout';
+import AdminCheck from './admin/AdminCheck';
 
 class Routes {
 
@@ -38,6 +39,7 @@ class Routes {
   private _adminRoutes(): void {
     new AdminLogin(this._app)
     new AdminLogout(this._app)
+    new AdminCheck(this._app)
   }
 }
 

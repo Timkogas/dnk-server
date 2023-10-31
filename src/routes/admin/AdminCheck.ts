@@ -1,0 +1,38 @@
+import * as core from 'express-serve-static-core';
+import auth from '../../helpers/auth';
+
+export default class AdminCheck {
+    constructor(app: core.Express) {
+        this._app = app;
+        this._init();
+    }
+
+    private _app: core.Express;
+
+    private _init(): void {
+        this._app.post('/admin/check', auth, async (req, res): Promise<void> => {
+            await this._route(req, res);
+        });
+    }
+
+    private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
+        try {
+
+            const user = req.body.user;
+            if (user) {
+                res.json({
+                    error: false,
+                    error_text: '',
+                    data: {}
+                });
+            }
+        } catch (error) {
+            console.error('Error processing session check', error);
+            res.json({
+                error: true,
+                error_text: 'Internal Server Error',
+                data: {}
+            });
+        }
+    }
+}

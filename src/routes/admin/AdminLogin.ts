@@ -19,7 +19,7 @@ export default class AdminLogin {
     try {
       const username = req.body.username;
       const password = req.body.password;
-      console.log(username, password)
+
       const admin = await Admin.findOne({ username });
 
       if (!admin) {
@@ -32,7 +32,7 @@ export default class AdminLogin {
       }
 
       const isMatch = await admin.checkPassword(password);
-      console.log(isMatch)
+
       if (!isMatch) {
         res.json({
           error: true,
