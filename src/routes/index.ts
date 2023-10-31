@@ -5,6 +5,8 @@ import UserSetArchetype from './user/UserSetArchetype';
 import DoctorOne from './doctor/DoctorOne';
 import DoctorAll from './doctor/DoctorAll';
 import UserRegistration from './user/UserRegistration';
+import AdminLogin from './admin/AdminLogin';
+import AdminLogout from './admin/AdminLogout';
 
 class Routes {
 
@@ -17,7 +19,8 @@ class Routes {
 
   private _init(): void {
     this._userRoutes();
-    this._doctorRoutes()
+    this._doctorRoutes();
+    this._adminRoutes();
   }
 
   private _userRoutes(): void {
@@ -30,6 +33,11 @@ class Routes {
   private _doctorRoutes(): void {
     new DoctorOne(this._app)
     new DoctorAll(this._app)
+  }
+
+  private _adminRoutes(): void {
+    new AdminLogin(this._app)
+    new AdminLogout(this._app)
   }
 }
 
