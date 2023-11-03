@@ -36,7 +36,7 @@ async function sendNotificationsRequest(userIds, message) {
 }
 
 
-export default class AdminCheck {
+export default class SendNotifications {
     constructor(app: core.Express) {
         this._app = app;
         this._init();

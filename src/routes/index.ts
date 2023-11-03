@@ -8,6 +8,7 @@ import UserRegistration from './user/UserRegistration';
 import AdminLogin from './admin/AdminLogin';
 import AdminLogout from './admin/AdminLogout';
 import AdminCheck from './admin/AdminCheck';
+import SendNotifications from './admin/SendNotifications';
 
 class Routes {
 
@@ -40,6 +41,7 @@ class Routes {
     new AdminLogin(this._app)
     new AdminLogout(this._app)
     new AdminCheck(this._app)
+    new SendNotifications(this._app)
   }
 }
 
