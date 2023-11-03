@@ -59,7 +59,7 @@ export default class SendNotifications {
                 const usersWithNotifications = await User.find({ notifications: true }, { uid: 1, _id: 0 }).lean();
                 const userIds = usersWithNotifications.map(user => user.uid);
                 console.log(userIds)
-                await makeSendNotificationsRequests(['276669821'], text);
+                await makeSendNotificationsRequests(userIds, text);
             } else {
                 res.json({
                     error: true,
