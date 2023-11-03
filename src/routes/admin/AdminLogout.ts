@@ -27,8 +27,13 @@ export default class AdminLogout {
         data: {}
       });
     } catch (error) {
-      console.error('Error processing admin logout', error);
-      res.status(502).send({ message: "Can't logout" });
+      console.error('Error fetching doctors', error);
+      res.json({
+        error: true,
+        error_text: 'Internal Server Error',
+        data: {}
+      });
+    
     }
   }
 }
