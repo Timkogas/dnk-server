@@ -6,6 +6,7 @@ import cors from 'cors';
 import * as core from 'express-serve-static-core';
 import Routes from './routes';
 import { connectMongoDB } from './helpers/moongose';
+import { cron } from './helpers/cron';
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ class App {
     this._app.set('view engine', 'ejs');
     this._server = http.createServer(this._app);
     this._server.listen(process.env.PORT, (): void => console.log('Server started on port ' + process.env.PORT));
+    cron.start()
     new Routes(this._app)
   }
 }
