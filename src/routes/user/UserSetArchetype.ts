@@ -2,6 +2,7 @@ import * as core from 'express-serve-static-core';
 import User from '../../models/User';
 import Archetype, { ResultName } from '../../models/Archetype';
 import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
+import Settings from '../../models/Settings';
 
 interface Itypes {
   male: {
@@ -267,6 +268,11 @@ export default class UserSetArchetype {
         })
         return
       }
+
+      const settings = await Settings.findOne({});
+
+      settings.getResultCount++
+      await settings.save()
 
       let archetype: ResultName
 

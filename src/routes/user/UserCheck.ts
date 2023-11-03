@@ -1,6 +1,7 @@
 import * as core from 'express-serve-static-core';
 import User, { UserInfo } from '../../models/User';
 import { verifyLaunchParams } from '../../helpers/verifyLaunchParams';
+import Settings from '../../models/Settings';
 
 let requestCounter = {};
 
@@ -68,15 +69,21 @@ export default class UserCheck {
       }
 
       // Проверяем существование пользователя по uid
+      const settings = await Settings.findOne({});
+
       let user = await User.findOne({ uid }).populate('archetype');
       const vkData: UserInfo = req?.body?.vkData;
 
       if (!user) {
         // Пользователь не найден, создаем нового пользователя
         user = new User({ uid, vkdata: vkData });
+        settings.uniqueStartCount++
         await user.save();
+        await settings.save();
       } else {
+        settings.allStartCount++;
         await user.updateOne({ lastLoginDate: Date.now(), vkdata: vkData })
+        await settings.save();
       }
 
       // Возвращаем данные о пользователе

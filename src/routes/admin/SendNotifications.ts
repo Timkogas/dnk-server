@@ -65,15 +65,14 @@ export default class SendNotifications {
                 const canSendNotification = settings ? settings.canSendNotification : false;
 
                 if (canSendNotification) {
-                    // await makeSendNotificationsRequests(userIds, text);
+                    await makeSendNotificationsRequests(userIds, text);
                     settings.canSendNotification = false;
                     await settings.save();
 
                     setTimeout(async () => {
                         settings.canSendNotification = true;
                         await settings.save();
-                    }, 60000); 
-                    //24 * 60 * 60 * 1000
+                    }, 24 * 60 * 60 * 1000); 
                 } else {
                     res.json({
                         error: true,
