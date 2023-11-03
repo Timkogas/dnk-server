@@ -29,7 +29,13 @@ export default class AdminCheck {
                 res.json({
                     error: false,
                     error_text: '',
-                    data: { canSendNotification }
+                    data: {
+                        canSendNotification: canSendNotification,
+                        allStartCount: settings?.allStartCount || 0,
+                        uniqueStartCount: settings?.uniqueStartCount || 0,
+                        getResultCount: settings?.getResultCount || 0,
+
+                    }
                 });
             }
         } catch (error) {
