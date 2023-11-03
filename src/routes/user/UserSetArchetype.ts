@@ -182,7 +182,7 @@ const findResult = (types: { [key: string]: ResultName }, a: number[]): ResultNa
 let requestCounter = {};
 
 setInterval(() => {
-    requestCounter = {};
+  requestCounter = {};
 }, 100000);
 
 export default class UserSetArchetype {
@@ -204,13 +204,13 @@ export default class UserSetArchetype {
     requestCounter[clientIP] = requestCounter[clientIP] || 0;
     requestCounter[clientIP]++;
 
-    if (requestCounter[clientIP] > 10) { 
-        res.json({
-            error: true,
-            error_text: 'to many requests',
-            data: {}
-        })
-        return
+    if (requestCounter[clientIP] > 10) {
+      res.json({
+        error: true,
+        error_text: 'to many requests',
+        data: {}
+      })
+      return
     }
 
     try {
@@ -232,7 +232,7 @@ export default class UserSetArchetype {
         })
         return
       }
-    
+
 
 
       const params = new URLSearchParams(req.headers.search as string);
@@ -269,10 +269,13 @@ export default class UserSetArchetype {
         return
       }
 
-      const settings = await Settings.findOne({});
-
-      settings.getResultCount++
-      await settings.save()
+      if (user.archetype === null) {
+        const settings = await Settings.findOne({});
+        if (settings) {
+          settings.getResultCount++;
+          await settings.save();
+        }
+      }
 
       let archetype: ResultName
 
