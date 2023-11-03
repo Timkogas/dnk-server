@@ -1,5 +1,6 @@
 import * as core from 'express-serve-static-core';
 import auth from '../../helpers/auth';
+import Settings from '../../models/Settings';
 
 export default class AdminCheck {
     constructor(app: core.Express) {
@@ -19,11 +20,16 @@ export default class AdminCheck {
         try {
 
             const user = req.body.user;
+
             if (user) {
+
+                const settings = await Settings.findOne({});
+                const canSendNotification = settings ? settings.canSendNotification : false;
+
                 res.json({
                     error: false,
                     error_text: '',
-                    data: {}
+                    data: { canSendNotification }
                 });
             }
         } catch (error) {
