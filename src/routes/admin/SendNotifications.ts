@@ -62,24 +62,16 @@ export default class SendNotifications {
 
 
                 const settings = await Settings.findOne({});
-                const canSendNotification = settings ? settings.canSendNotification : false;
 
-                if (canSendNotification) {
-                    await makeSendNotificationsRequests(userIds, text);
-                    settings.canSendNotification = false;
+                await makeSendNotificationsRequests(userIds, text);
+                settings.canSendNotification = false;
+                await settings.save();
+
+                setTimeout(async () => {
+                    settings.canSendNotification = true;
                     await settings.save();
+                }, 24 * 60 * 60 * 1000);
 
-                    setTimeout(async () => {
-                        settings.canSendNotification = true;
-                        await settings.save();
-                    }, 24 * 60 * 60 * 1000); 
-                } else {
-                    res.json({
-                        error: true,
-                        error_text: 'less than 24 hours have passed',
-                        data: {}
-                    });
-                }
             } else {
                 res.json({
                     error: true,

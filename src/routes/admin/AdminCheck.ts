@@ -1,6 +1,7 @@
 import * as core from 'express-serve-static-core';
 import auth from '../../helpers/auth';
 import Settings from '../../models/Settings';
+import Archetype from '../../models/Archetype';
 
 export default class AdminCheck {
     constructor(app: core.Express) {
@@ -25,6 +26,7 @@ export default class AdminCheck {
 
                 const settings = await Settings.findOne({});
                 const canSendNotification = settings ? settings.canSendNotification : false;
+                const archetypes = await Archetype.find({}, { _id: 1, name: 1 });
 
                 res.json({
                     error: false,
@@ -34,7 +36,7 @@ export default class AdminCheck {
                         allStartCount: settings?.allStartCount || 0,
                         uniqueStartCount: settings?.uniqueStartCount || 0,
                         getResultCount: settings?.getResultCount || 0,
-
+                        archetypes: archetypes,
                     }
                 });
             }
