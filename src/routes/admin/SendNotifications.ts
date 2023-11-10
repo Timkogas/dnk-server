@@ -60,9 +60,9 @@ export default class SendNotifications {
 
                 const usersWithNotifications = await User.find({
                     notifications: true,
-                    'archetype._id': { $in: targets }
-                  }, { uid: 1, _id: 0 }).lean();
-                  console.log(usersWithNotifications)
+                    'archetype': { $in: targets }
+                }, { uid: 1, _id: 0 }).lean();
+                console.log(usersWithNotifications)
                 const userIds = usersWithNotifications.map(user => user.uid);
 
                 if (targetType === 'archetypes') {
