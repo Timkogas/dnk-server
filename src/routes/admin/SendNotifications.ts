@@ -99,7 +99,7 @@ export default class SendNotifications {
 
                     const usersWithNotifications = await User.find({
                         notifications: true
-                    })
+                    }, { uid: 1, _id: 0, archetype: 1 })
                         .populate({
                             path: 'archetype',
                             match: { name: { $in: allArchetypeNamesWithoutDuplicates } },
@@ -111,6 +111,7 @@ export default class SendNotifications {
 
                     console.log(usersWithNotifications, 'lуууl')
                     console.log(filteredUsers, 'lol')
+                    console.log(userIds, 'end')
 
                 }
             } else {
