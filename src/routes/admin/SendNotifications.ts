@@ -54,8 +54,8 @@ export default class SendNotifications {
     private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
         try {
 
-            const text = req.body.text;
-
+            const { text, target, targetType } = req.body.text;
+            console.log(target, targetType)
             if (text) {
                 const usersWithNotifications = await User.find({ notifications: true }, { uid: 1, _id: 0 }).lean();
                 const userIds = usersWithNotifications.map(user => user.uid);
@@ -63,14 +63,14 @@ export default class SendNotifications {
 
                 const settings = await Settings.findOne({});
 
-                await makeSendNotificationsRequests(userIds, text);
-                settings.canSendNotification = false;
-                await settings.save();
+                // await makeSendNotificationsRequests(userIds, text);
+                // settings.canSendNotification = false;
+                // await settings.save();
 
-                setTimeout(async () => {
-                    settings.canSendNotification = true;
-                    await settings.save();
-                }, 24 * 60 * 60 * 1000);
+                // setTimeout(async () => {
+                //     settings.canSendNotification = true;
+                //     await settings.save();
+                // }, 24 * 60 * 60 * 1000);
 
             } else {
                 res.json({
