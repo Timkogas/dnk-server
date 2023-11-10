@@ -78,15 +78,7 @@ export default class SendNotifications {
                         'archetype': { $in: targets }
                     }, { uid: 1, _id: 0 }).lean();
                     const userIds = usersWithNotifications.map(user => user.uid);
-                    // await makeSendNotificationsRequests(userIds, text);
-                    // settings.canSendNotification = false;
-                    // await settings.save();
-
-                    // setTimeout(async () => {
-                    //     settings.canSendNotification = true;
-                    //     await settings.save();
-                    // }, 24 * 60 * 60 * 1000);
-
+                    await makeSendNotificationsRequests(userIds, text);
                 } else if (targetType === 'profiles') {
                     const allArchetypeNames: ResultName[] = targets.reduce((acc, profile) => {
                         acc.push(...profileNames[profile]);
@@ -94,8 +86,6 @@ export default class SendNotifications {
                     }, []);
 
                     const allArchetypeNamesWithoutDuplicates: ResultName[] = Array.from(new Set(allArchetypeNames));
-
-                    console.log(allArchetypeNamesWithoutDuplicates, 'lel')
 
                     const usersWithNotifications = await User.find({
                         notifications: true
@@ -108,11 +98,7 @@ export default class SendNotifications {
                         .lean();
                     const filteredUsers = usersWithNotifications.filter(user => user.archetype);
                     const userIds = filteredUsers.map(user => user.uid);
-
-                    console.log(usersWithNotifications, 'lуууl')
-                    console.log(filteredUsers, 'lol')
-                    console.log(userIds, 'end')
-
+                    await makeSendNotificationsRequests(userIds, text);
                 }
             } else {
                 res.json({
