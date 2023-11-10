@@ -4,21 +4,11 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import User from '../../models/User';
 import Settings from '../../models/Settings';
+import { ResultName } from '../../models/Archetype';
 
 dotenv.config();
 
-enum Profile {
-    Profile1 = 'Девушки 18-25 лет',
-    Profile2 = 'Девушки 26-33 лет',
-    Profile3 = 'Женщины 34-43 лет',
-    Profile4 = 'Женщины 44-56 лет',
-    Profile5 = 'Мужчины 18-25 лет',
-    Profile6 = 'Мужчины 26-35 лет',
-    Profile7 = 'Мужчины 36-45 лет',
-    Profile8 = 'Мужчины 46-54 лет'
-}
-
-const profileNames: { [key: string]: string[] } = {
+const profileNames: { [key: string]: ResultName[] } = {
     'Девушки 18-25 лет': ['парижанка', 'жанна д’арк', 'золушка', 'мальвина', 'принцесса', 'женщина-вамп', 'чемпионка', 'наташа ростова', 'дюймовочка'],
     'Девушки 26-33 лет': ['королева', 'мать тереза', 'фея', 'дюймовочка', 'золушка', 'императрица', 'мэрилин монро'],
     'Женщины 34-43 лет': ['коко шанель', 'русалка', 'бизнес-леди', 'скарлетт', 'жанна д’арк', 'дульсинея', 'провинциалка', 'мэрилин монро'],
@@ -98,23 +88,30 @@ export default class SendNotifications {
                     // }, 24 * 60 * 60 * 1000);
 
                 } else if (targetType === 'profiles') {
-                    const allArchetypeNames: string[] = targets.reduce((acc, profile) => {
+                    const allArchetypeNames: ResultName[] = targets.reduce((acc, profile) => {
                         acc.push(...profileNames[profile]);
                         return acc;
                     }, []);
 
-                    const allArchetypeNamesWithoutDuplicates: string[] = Array.from(new Set(allArchetypeNames));
+                    const allArchetypeNamesWithoutDuplicates: ResultName[] = Array.from(new Set(allArchetypeNames));
 
                     console.log(allArchetypeNamesWithoutDuplicates, 'lel')
 
                     const usersWithNotifications = await User.find({
-                        notifications: true,
-                        'archetype.name': { $in: allArchetypeNamesWithoutDuplicates }
-                    }, { uid: 1, _id: 0 }).lean();
-                    const userIds = usersWithNotifications.map(user => user.uid);
+                        notifications: true
+                    })
+                        .populate({
+                            path: 'archetype',
+                            match: { name: { $in: allArchetypeNamesWithoutDuplicates } },
+                            select: 'name' // Only select the 'name' field of the archetype
+                        })
+                        .lean();
+                    const filteredUsers = usersWithNotifications.filter(user => user.archetype);
+                    const userIds = filteredUsers.map(user => user.uid);
 
-                    console.log(usersWithNotifications, 'lol')
-                    
+                    console.log(usersWithNotifications, 'lуууl')
+                    console.log(filteredUsers, 'lol')
+
                 }
             } else {
                 res.json({
