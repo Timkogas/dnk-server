@@ -57,9 +57,19 @@ export default class SendNotifications {
             const { text, targets, targetType } = req.body;
             console.log(targets, targetType)
             if (text) {
-                const usersWithNotifications = await User.find({ notifications: true }, { uid: 1, _id: 0 }).lean();
+
+                const usersWithNotifications = await User.find({
+                    notifications: true,
+                    'archetype._id': { $in: targets }
+                  }, { uid: 1, _id: 0 }).lean();
+                  console.log(usersWithNotifications)
                 const userIds = usersWithNotifications.map(user => user.uid);
 
+                if (targetType === 'archetypes') {
+
+                } else if (targetType === 'profiles') {
+
+                }
 
                 const settings = await Settings.findOne({});
 
