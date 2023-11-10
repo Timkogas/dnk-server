@@ -98,25 +98,18 @@ export default class SendNotifications {
                     // }, 24 * 60 * 60 * 1000);
 
                 } else if (targetType === 'profiles') {
-                    const allArchetypeNamesSet = new Set<string>();
+                    const allArchetypeNames: string[] = targets.reduce((acc, profile) => {
+                        acc.push(...profileNames[profile]);
+                        return acc;
+                    }, []);
 
-                    targets.forEach(profile => {
-                        const profileName = Profile[profile];
-                        if (profileName) {
-                            const archetypeNames = profileNames[profileName];
-                            archetypeNames.forEach(archetype => {
-                                allArchetypeNamesSet.add(archetype);
-                            });
-                        }
-                    });
-                    
-                    const allArchetypeNames: string[] = Array.from(allArchetypeNamesSet);
+                    const allArchetypeNamesWithoutDuplicates: string[] = Array.from(new Set(allArchetypeNames));
 
-                    console.log(allArchetypeNames, 'lel')
+                    console.log(allArchetypeNamesWithoutDuplicates, 'lel')
 
                     const usersWithNotifications = await User.find({
                         notifications: true,
-                        'archetype.name': { $in: allArchetypeNames }
+                        'archetype.name': { $in: allArchetypeNamesWithoutDuplicates }
                     }, { uid: 1, _id: 0 }).lean();
                     const userIds = usersWithNotifications.map(user => user.uid);
 
