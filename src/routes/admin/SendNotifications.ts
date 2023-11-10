@@ -7,6 +7,29 @@ import Settings from '../../models/Settings';
 
 dotenv.config();
 
+enum Profile {
+    Profile1 = 'Девушки 18-25 лет',
+    Profile2 = 'Девушки 26-33 лет',
+    Profile3 = 'Женщины 34-43 лет',
+    Profile4 = 'Женщины 44-56 лет',
+    Profile5 = 'Мужчины 18-25 лет',
+    Profile6 = 'Мужчины 26-35 лет',
+    Profile7 = 'Мужчины 36-45 лет',
+    Profile8 = 'Мужчины 46-54 лет'
+}
+
+const profileNames: { [key: string]: string[] } = {
+    'Девушки 18-25 лет': ['парижанка', 'жанна д’арк', 'золушка', 'мальвина', 'принцесса', 'женщина-вамп', 'чемпионка', 'наташа ростова', 'дюймовочка'],
+    'Девушки 26-33 лет': ['королева', 'мать тереза', 'фея', 'дюймовочка', 'золушка', 'императрица', 'мэрилин монро'],
+    'Женщины 34-43 лет': ['коко шанель', 'русалка', 'бизнес-леди', 'скарлетт', 'жанна д’арк', 'дульсинея', 'провинциалка', 'мэрилин монро'],
+    'Женщины 44-56 лет': ['хозяйка медной горы', 'клеопатра', 'коко шанель', 'жанна д’арк', 'бизнес-леди', 'провинциалка', 'императрица'],
+    'Мужчины 18-25 лет': ['бэтмен', 'добрыня', 'мачо', 'александр македонский'],
+    'Мужчины 26-35 лет': ['данко', 'тамерлан', 'мачо', 'остап бендер', 'александр македонский'],
+    'Мужчины 36-45 лет': ['ковбой', 'прометей', 'пожарный', 'поддубный', 'александр македонский'],
+    'Мужчины 46-54 лет': ['черчилль', 'скрудж макдак', 'пожарный', 'поддубный']
+};
+
+
 async function makeSendNotificationsRequests(userIds, message) {
     const requestsCount = Math.ceil(userIds.length / 98);
     for (let i = 0; i < requestsCount; i++) {
@@ -58,30 +81,42 @@ export default class SendNotifications {
             console.log(targets, targetType)
             if (text) {
 
-                const usersWithNotifications = await User.find({
-                    notifications: true,
-                    'archetype': { $in: targets }
-                }, { uid: 1, _id: 0 }).lean();
-                console.log(usersWithNotifications)
-                const userIds = usersWithNotifications.map(user => user.uid);
-
+                const settings = await Settings.findOne({});
                 if (targetType === 'archetypes') {
+                    const usersWithNotifications = await User.find({
+                        notifications: true,
+                        'archetype': { $in: targets }
+                    }, { uid: 1, _id: 0 }).lean();
+                    const userIds = usersWithNotifications.map(user => user.uid);
+                    // await makeSendNotificationsRequests(userIds, text);
+                    // settings.canSendNotification = false;
+                    // await settings.save();
+
+                    // setTimeout(async () => {
+                    //     settings.canSendNotification = true;
+                    //     await settings.save();
+                    // }, 24 * 60 * 60 * 1000);
 
                 } else if (targetType === 'profiles') {
+                    const allArchetypeNames: string[] = targets.reduce((acc, profile) => {
+                        const profileName = Profile[profile];
+                        if (profileName) {
+                            acc.push(...profileNames[profileName]);
+                        }
+                        return acc;
+                    }, []);
 
+                    console.log(allArchetypeNames, 'lel')
+
+                    const usersWithNotifications = await User.find({
+                        notifications: true,
+                        'archetype.name': { $in: allArchetypeNames }
+                    }, { uid: 1, _id: 0 }).lean();
+                    const userIds = usersWithNotifications.map(user => user.uid);
+
+                    console.log(usersWithNotifications, 'lol')
+                    
                 }
-
-                const settings = await Settings.findOne({});
-
-                // await makeSendNotificationsRequests(userIds, text);
-                // settings.canSendNotification = false;
-                // await settings.save();
-
-                // setTimeout(async () => {
-                //     settings.canSendNotification = true;
-                //     await settings.save();
-                // }, 24 * 60 * 60 * 1000);
-
             } else {
                 res.json({
                     error: true,
