@@ -54,7 +54,7 @@ export default class SendNotifications {
     private async _route(req: core.Request<any>, res: core.Response<any>): Promise<void> {
         try {
 
-            const { text, target, targetType } = req.body.text;
+            const { text, target, targetType } = req.body;
             console.log(target, targetType)
             if (text) {
                 const usersWithNotifications = await User.find({ notifications: true }, { uid: 1, _id: 0 }).lean();
