@@ -99,10 +99,7 @@ export default class SendNotifications {
 
                 } else if (targetType === 'profiles') {
                     const allArchetypeNames: string[] = targets.reduce((acc, profile) => {
-                        const profileName = Profile[profile];
-                        if (profileName) {
-                            acc.push(...profileNames[profileName]);
-                        }
+                        acc.push(...profileNames[profile]);
                         return acc;
                     }, []);
 
