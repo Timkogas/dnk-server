@@ -98,10 +98,19 @@ export default class SendNotifications {
                     // }, 24 * 60 * 60 * 1000);
 
                 } else if (targetType === 'profiles') {
-                    const allArchetypeNames: string[] = targets.reduce((acc, profile) => {
-                        acc.push(...profileNames[profile]);
-                        return acc;
-                    }, []);
+                    const allArchetypeNamesSet = new Set<string>();
+
+                    targets.forEach(profile => {
+                        const profileName = Profile[profile];
+                        if (profileName) {
+                            const archetypeNames = profileNames[profileName];
+                            archetypeNames.forEach(archetype => {
+                                allArchetypeNamesSet.add(archetype);
+                            });
+                        }
+                    });
+                    
+                    const allArchetypeNames: string[] = Array.from(allArchetypeNamesSet);
 
                     console.log(allArchetypeNames, 'lel')
 
