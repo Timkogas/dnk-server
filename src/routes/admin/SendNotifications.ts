@@ -43,9 +43,9 @@ async function sendNotificationsRequest(userIds, message) {
     }).toString();
     try {
         const response = await axios.post(`https://api.vk.com/method/notifications.sendMessage`, params);
-        console.log('[Уведомления] ответ от вк', response.data);
+        console.log('[Уведомления] ответ от вк', JSON.stringify(response.data));
     } catch (error) {
-        console.log('[Уведомления] ошибка при отправке запроса', error);
+        console.log('[Уведомления] ошибка при отправке запроса', JSON.stringify(error));
     }
 }
 
