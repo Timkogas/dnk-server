@@ -5,9 +5,7 @@ import cors from 'cors';
 import * as core from 'express-serve-static-core';
 import Routes from './routes';
 import { connectMongoDB } from './helpers/moongose';
-import { cron } from './helpers/cron';
-import Db from './Db/Db';
-
+import path from 'path';
 dotenv.config();
 
 class App {
